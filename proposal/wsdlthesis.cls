@@ -131,49 +131,48 @@
         \def\baselinestretch{2.0}\@normalsize
         \thispagestyle{empty}%
         \begin{center}
-                {\large\bf\uppercase\expandafter{\@title}}
+                {\large\bf\uppercase\expandafter{\@title}}\\
+                ECE 486 Midterm Report\\
         \end{center}
         \renewcommand{\baselinestretch}{1.0}\@normalsize
         \begin{center}
                  by\\
                 \vspace{18pt}
-                \@author\\
-                \@degrees\\
+                Stephen Lamczyk (CpE)\\
+                \vspace{6pt}
+                Jacob Strother (EE)\\
+                \vspace{6pt}
+                Zephaniah Amonoo-Harrison (CpE)\\
+                \vspace{6pt}
+                Seth Cummings (EE)\\
         \end{center}
+        \vfill
         \vfill
         \begin{center}
-                \ifproposal
-                        A \ifmaster Master's \else Candidacy \fi Proposal Submitted to\\
-                        the Faculty of Old Dominion University\\
-                \else
-                        A \ifmaster Thesis \else Dissertation \fi Submitted to the Faculty of\\
-                        Old Dominion University in Partial Fulfillment of the\\
-                        Requirements for the Degree of\\
-                \fi
+                PhD Student Advisor:\\
+                \vspace{6pt}
+                Megan Witherow\\
                 \vspace{18pt}
-                \ifmaster \uppercase{Master of Science} \else \uppercase{Doctor of Philosophy} \fi \\
+                Faculty Advisor:\\
+                \vspace{6pt}
+                Dr. Khan M. Iftekharuddin\\
+                
                 \vspace{18pt}
-                \uppercase\expandafter{\@dept}\\
+                Old Dominion University\\
+                \vspace{6pt}
+                Department of Electrical and Computer Engineering\\
+                \vspace{6pt}
+                October 22, 2021\\
+                \vspace{36pt}
+                ODU Honor Pledge\\
                 \vspace{18pt}
-                \uppercase{Old Dominion University}\\
-                \@submitdate\\
+                “I [we] pledge to support the Honor System of Old Dominion University. I [we] will refrain from any form of academic dishonesty or deception, such as cheating or plagiarism. I [we] am aware that as a member of the academic community it is my responsibility to turn in all suspected violation of the Honor Code. I [we] will report to a hearing if summoned.” \par
         \end{center}
-        \vfill
-        \hfill\parbox[t]{2.5in}{Approved by:\\
-                                \signline{\@principaladviser\ (Director)}
-                                \@member}
         \vfill\newpage}
 
 \def\abstractpage{\def\baselinestretch{1.3}\@normalsize\pagestyle{empty}%
         \begin{center}
                 {\large\bf ABSTRACT}\\
-                \vspace{18pt}
-                \renewcommand{\baselinestretch}{1.0}\@normalsize
-                {\large\uppercase\expandafter{\@title}}\\
-                \vspace{18pt}
-                \@author\\
-                Old Dominion University, \number\the\year\\
-                Director: Dr. \@principaladviser\\
         \end{center}
         \par
         \@abstract
@@ -197,14 +196,7 @@
               \end{flushleft}}
 
 \def\copyrightpage{%
-        \pagestyle{myheadings}
-        \vspace*{2in}
-        \begin{center}
-                Copyright,\ \@copyrightyear,\ by
-                \@author,\
-                All Rights Reserved.
-        \end{center}
-        \vfill\newpage}
+}
 
 \def\beforepreface{
         \pagenumbering{roman}
@@ -228,17 +220,17 @@
         \tableofcontents
         \cleardoublepage
         \phantomsection
-        \iftablespage
-                \addcontentsline{toc}{chapter}{\uppercase{List of Tables}}
-                \listoftables
-                \cleardoublepage
-                \phantomsection
-        \fi
         \iffigurespage
                 \addcontentsline{toc}{chapter}{\uppercase{List of Figures}}
                 \listoffigures
                 \cleardoublepage
                 \phantomsection
+        \fi
+        \iftablespage
+        \addcontentsline{toc}{chapter}{\uppercase{List of Tables}}
+        \listoftables
+        \cleardoublepage
+        \phantomsection
         \fi
         \def\baselinestretch{1.3}\@normalsize
         \pagenumbering{arabic}

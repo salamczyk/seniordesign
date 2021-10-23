@@ -1,33 +1,17 @@
 \chapter{Introduction}
 \label{ch:introduction}
+\section{Design Problem}
+The objective of this project is to design and implement a problem setting where two NAO robots communicate and perform behaviors to reach a target state.\par 
 
-\todo[Counting frogs (Fig.~\ref{fig:frog}) has been traditionally done in the Web Science and Digital Libraries Research Lab (WS-DL)\footnote{\url{https://ws-dl.cs.odu.edu/}} to keep track of the days left until the next JCDL\footnote{\url{http://www.jcdl.org/}} submission deadline.
-Table~\ref{tab:frogsleft} illustrates how the frogs are counted.]
+The design approach will involve using Choregraphe and the NAOqi API to build each controller and their respective modules. Many of the NAO robot’s sensing technologies will also be employed to accomplish the design task. \par
 
-\begin{figure}
-  \centering
-  \includegraphics{frog}
-  \caption{The Mighty Frog}
-  \label{fig:frog}
-\end{figure}
 
-\begin{table}
-  \centering
-  \caption{How many frogs left?}
-  \label{tab:frogsleft}
-  \begin{tabular}{ l | r }
-    \hline
-    \textbf{Day wrt. JCDL} & \textbf{Frogs left} \\
-    \hline
-    Immediately after      & 300+ \\
-    Four months before     & 100+ \\
-    Three months before    & 90 \\
-    One month before       & 30 \\
-    One week before        & 7 \\
-    Three days before      & 3 \\
-    Two days before        & 2 \\
-    One day before         & 1 \\
-    At submission deadline & 0 \\
-    \hline
-  \end{tabular}
-\end{table}
+\section{Design Functionality}
+This design will use two NAO robots, each connected to a separate computer. The programs built in Choregraphe will be uploaded to each robot through an ethernet connection between the computer and robot. Each robot will have their own block diagram program designed in Choregraphe tailored to what the robot will be doing; robot A will display some random initial behavior and robot B will try to move robot A toward some target state. Both robots will adjust their behaviors based on what the other robot does.
+\par 
+\section{Quantitative Performance Objectives}
+The robot should be moved to the target state in a realistic amount of time based on how complex the set of behaviors are. When using three basic behaviors that only control the color of the eyes on the robots, the interaction should take no more than a minute to complete. When using more than three complex behaviors that control eye color, movement and speech, the interaction should take no more than five minutes. \par
+
+
+
+
