@@ -1,4 +1,23 @@
 \chapter{Design Approach}
 \label{ch:designapproach}
+\section{Realistic Constraints}
+\subsection{Economic Constraints}
+An analysis of the economic constraints associated with the use of the NAO robots reveals that the cost of equipment is not accounted for. The equipment that ranges from the robots and their wires to the softwares used in the design are purchased and provided prior to the beginning of the project. Due to this, the project has no budget. According to RobotLAB (an educational robotics market), the price of the latest NAO to that of older models ranges from \$9000 to \$6500 \cite{vaudel}. Therefore, in a hypothetical scene, if an organization wanted to make use of the robots in their own manner, the cost to obtain them is affordable. \par
+\subsection{Environmental Constraints}
+The programming of the NAO robots took place in the Vision Lab. The wires used to establish an internet connection between the robots are of a certain length. This means that there is a restriction in the amount of movement the robots can perform. To accommodate this, the two robots were always used in close proximity. The NAO robots are not innately programmed to avoid collision so a room with many obstacles must be accounted for. \par
+\subsection{Technological Constraints}
+One huge constraint for this project is that the NAO robots and NAOQI do not support the latest version of Python. Python 2.7 is the only version of python supported \cite{python} . Python 2.7 went out of support on January 1, 2020. Therefore, many libraries do not support it. This limits what we can do with this project without extra complex systems to support Python 3 code. In addition, the NAO robots are lacking novel GPUs in their hardware. This additionally limits the complexity of any potential networks unless other methods are implemented such as streaming data to a nearby GPU. \par
+\section{Alternative Designs}
+Our first opportunity to choose between designs was when choosing to program the virtual or real robots. After sticking with the real robots, we had to choose between using C++ or Python. We went with Python. After that, we had to choose between Choregraphe and just using raw Python. We chose Choregraphe. Consequently, we had to make a choice on whether to use built in functionalities or implement ours from scratch. We went with the Choregraphe built in functions. Details and reasons for these choices are explained in the next section. \par
+\section{Analyses Used to Select Among These Alternative Design Concepts}
+here are and were multiple opportunities to implement alternative designs. In the beginning we had to decide whether to program virtual NAO robots or the actual NAO robots. The virtual NAO robots would have been programmed with the virtual WeBots environment \cite{webots}. We decided to go with the physical NAO robots as the NAOqi is no longer supported in WeBots. This meant that any code written for a virtual robot would not work for the real ones. \par 
 
-\todo[]
+After making that choice, we had to decide between C++ and Python 2.7.  We made the choice to go with Python 2.7 as the developer website warns against going with C++. Additionally, machine learning libraries and computer vision libraries support Python 2.7 more than C++.  \par 
+
+Afterwards, we had to choose between using just raw Python 2.7 or using Python in the context of Choregraphe. We decided to use Choregraphe as it is simpler to use and we experienced some seemingly non deterministic behavior with just using Python 2.7. In addition, if some custom python modules are required, then we can implement them. \par 
+
+Another alternative design we could have is implementing our object classifiers and natural language modules from scratch. We decided to go with the built-in NAO robot modules as these have been proven experimentally to be capable of performing simple object classification and voice recognition. \par
+
+\section{Team Organization and Performance}
+
+When splitting up the work of the 6 modules we naturally considered each team member’s own skills and interests. Stephen and Jacob chose the recognition modules due to their own experience with machine learning. Zeph and Seth chose the behavior modules due to their own experience with programming. Who is exactly working on the reinforcement modules is not determined at this point. Whoever is finished with their respective module first will then move on to their robot’s reinforcement module. \par 
