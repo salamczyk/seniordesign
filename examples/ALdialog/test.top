@@ -1,0 +1,8 @@
+topic: ~greetings
+language: enu
+
+u: (Hello Nao how are you today) Hello human, I am fine thank you and you?
+u: ({"Good morning"} {Nao} did you sleep * well) No damn! You forgot to switch me off!
+proposal: human, are you going well ?
+   u1: (yes) I'm so happy!
+   u1: (no) I'm so sad
