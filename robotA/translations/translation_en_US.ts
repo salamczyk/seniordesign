@@ -4,10 +4,9 @@
     <context>
         <name>behavior_1/behavior.xar:/Animated Say</name>
         <message>
-            <location filename="behavior_1/behavior.xar" line="0"/>
             <source>Hello</source>
             <comment>Text</comment>
-            <translation>Hello</translation>
+            <translation type="vanished">Hello</translation>
         </message>
     </context>
     <context>
@@ -31,10 +30,15 @@
     <context>
         <name>behavior_1/behavior.xar:/Animated Say (3)</name>
         <message>
-            <location filename="behavior_1/behavior.xar" line="0"/>
             <source>Yes</source>
             <comment>Text</comment>
-            <translation type="unfinished">Yes</translation>
+            <translation type="obsolete">Yes</translation>
+        </message>
+        <message>
+            <location filename="behavior_1/behavior.xar" line="0"/>
+            <source>affirmative</source>
+            <comment>Text</comment>
+            <translation type="unfinished">affirmative</translation>
         </message>
     </context>
     <context>
