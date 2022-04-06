@@ -228,7 +228,182 @@
               </Timeline>
               <Resource name="All motors" type="Lock" timeout="0" />
             </Box>
-            <Box name="Speech Reco. (2)" id="7" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="680" y="296">
+            <Box name="Speech Reco." id="5" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="137" y="332">
+              <bitmap>media/images/box/interaction/ear.png</bitmap>
+              <script language="4">
+                <content>
+                  <![CDATA[
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        try:
+            self.asr = self.session().service("ALSpeechRecognition")
+        except Exception as e:
+            self.asr = None
+            self.logger.error(e)
+        self.memory = self.session().service("ALMemory")
+        from threading import Lock
+        self.bIsRunning = False
+        self.mutex = Lock()
+        self.hasPushed = False
+        self.hasSubscribed = False
+        self.BIND_PYTHON(self.getName(), "onWordRecognized")
+
+    def onUnload(self):
+        from threading import Lock
+        self.mutex.acquire()
+        try:
+            if (self.bIsRunning):
+                if (self.hasSubscribed):
+                    self.memory.unsubscribeToEvent("WordRecognized", self.getName())
+                if (self.hasPushed and self.asr):
+                    self.asr.popContexts()
+        except RuntimeError, e:
+            self.mutex.release()
+            raise e
+        self.bIsRunning = False;
+        self.mutex.release()
+
+    def onInput_onStart(self):
+        from threading import Lock
+        self.mutex.acquire()
+        if(self.bIsRunning):
+            self.mutex.release()
+            return
+        self.bIsRunning = True
+        try:
+            if self.asr:
+                self.asr.pushContexts()
+            self.hasPushed = True
+            if self.asr:
+                self.asr.setVocabulary( self.getParameter("Word list").split(';'), self.getParameter("Enable word spotting") )
+            self.memory.subscribeToEvent("WordRecognized", self.getName(), "onWordRecognized")
+            self.hasSubscribed = True
+        except RuntimeError, e:
+            self.mutex.release()
+            self.onUnload()
+            raise e
+        self.mutex.release()
+
+    def onInput_onStop(self):
+        if( self.bIsRunning ):
+            self.onUnload()
+            self.onStopped()
+
+    def onWordRecognized(self, key, value, message):
+        if(len(value) > 1 and value[1] >= self.getParameter("Confidence threshold (%)")/100.):
+            self.wordRecognized(value[0]) #~ activate output of the box
+        else:
+            self.onNothing()
+
+    def onInput_onStopped2(self):
+        if( self.bIsRunning ):
+            self.onUnload()
+            self.onStopped2Stopped()]]>
+                </content>
+              </script>
+              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+              <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+              <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+              <Input name="onStopped2" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" />
+              <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="5" />
+              <Output name="wordRecognized" type="3" type_size="1" nature="2" inner="0" tooltip="Word recognized with a confidence higher than the threshold set in the box parameters." id="6" />
+              <Output name="onNothing" type="1" type_size="1" nature="2" inner="0" tooltip="Nothing has been understood." id="7" />
+              <Output name="onStopped2Stopped" type="1" type_size="1" nature="1" inner="0" tooltip="" id="8" />
+              <Parameter name="Word list" inherits_from_parent="0" content_type="3" value="ignoring;me" default_value="yes;no" custom_choice="0" tooltip="Try to recognize a word from a list of words set in the box parameters." id="9" />
+              <Parameter name="Confidence threshold (%)" inherits_from_parent="0" content_type="1" value="40" default_value="30" min="0" max="100" tooltip="If the confidence associated with the word recognized is below this threshold, the robot will consider that it is not recognized." id="10" />
+              <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="11" />
+              <Resource name="Speech recognition" type="Lock" timeout="0" />
+            </Box>
+            <Box name="Speech Reco. (1)" id="6" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="398" y="297">
+              <bitmap>media/images/box/interaction/ear.png</bitmap>
+              <script language="4">
+                <content>
+                  <![CDATA[
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        try:
+            self.asr = self.session().service("ALSpeechRecognition")
+        except Exception as e:
+            self.asr = None
+            self.logger.error(e)
+        self.memory = self.session().service("ALMemory")
+        from threading import Lock
+        self.bIsRunning = False
+        self.mutex = Lock()
+        self.hasPushed = False
+        self.hasSubscribed = False
+        self.BIND_PYTHON(self.getName(), "onWordRecognized")
+
+    def onUnload(self):
+        from threading import Lock
+        self.mutex.acquire()
+        try:
+            if (self.bIsRunning):
+                if (self.hasSubscribed):
+                    self.memory.unsubscribeToEvent("WordRecognized", self.getName())
+                if (self.hasPushed and self.asr):
+                    self.asr.popContexts()
+        except RuntimeError, e:
+            self.mutex.release()
+            raise e
+        self.bIsRunning = False;
+        self.mutex.release()
+
+    def onInput_onStart(self):
+        from threading import Lock
+        self.mutex.acquire()
+        if(self.bIsRunning):
+            self.mutex.release()
+            return
+        self.bIsRunning = True
+        try:
+            if self.asr:
+                self.asr.pushContexts()
+            self.hasPushed = True
+            if self.asr:
+                self.asr.setVocabulary( self.getParameter("Word list").split(';'), self.getParameter("Enable word spotting") )
+            self.memory.subscribeToEvent("WordRecognized", self.getName(), "onWordRecognized")
+            self.hasSubscribed = True
+        except RuntimeError, e:
+            self.mutex.release()
+            self.onUnload()
+            raise e
+        self.mutex.release()
+
+    def onInput_onStop(self):
+        if( self.bIsRunning ):
+            self.onUnload()
+            self.onStopped()
+
+    def onWordRecognized(self, key, value, message):
+        if(len(value) > 1 and value[1] >= self.getParameter("Confidence threshold (%)")/100.):
+            self.wordRecognized(value[0]) #~ activate output of the box
+        else:
+            self.onNothing()]]>
+                </content>
+              </script>
+              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+              <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+              <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+              <Input name="onStop_2" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" />
+              <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="5" />
+              <Output name="wordRecognized" type="3" type_size="1" nature="2" inner="0" tooltip="Word recognized with a confidence higher than the threshold set in the box parameters." id="6" />
+              <Output name="onNothing" type="1" type_size="1" nature="2" inner="0" tooltip="Nothing has been understood." id="7" />
+              <Output name="onStopped_2" type="1" type_size="1" nature="1" inner="0" tooltip="" id="8" />
+              <Parameter name="Word list" inherits_from_parent="0" content_type="3" value="ice;cream" default_value="yes;no" custom_choice="0" tooltip="Try to recognize a word from a list of words set in the box parameters." id="9" />
+              <Parameter name="Confidence threshold (%)" inherits_from_parent="0" content_type="1" value="40" default_value="30" min="0" max="100" tooltip="If the confidence associated with the word recognized is below this threshold, the robot will consider that it is not recognized." id="10" />
+              <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="11" />
+              <Resource name="Speech recognition" type="Lock" timeout="0" />
+            </Box>
+            <Box name="Speech Reco. (2)" id="7" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="597" y="309">
               <bitmap>media/images/box/interaction/ear.png</bitmap>
               <script language="4">
                 <content>
@@ -762,7 +937,7 @@ class MyClass(GeneratedClass):
                 </BehaviorLayer>
               </Timeline>
             </Box>
-            <Box name="Speech Reco. (5)" id="11" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="201" y="614">
+            <Box name="Speech Reco. (5)" id="11" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="295" y="629">
               <bitmap>media/images/box/interaction/ear.png</bitmap>
               <script language="4">
                 <content>
@@ -845,7 +1020,7 @@ class MyClass(GeneratedClass):
               <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="9" />
               <Resource name="Speech recognition" type="Lock" timeout="0" />
             </Box>
-            <Box name="Speech Reco. (6)" id="12" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="648" y="589">
+            <Box name="Speech Reco. (6)" id="12" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="734" y="609">
               <bitmap>media/images/box/interaction/ear.png</bitmap>
               <script language="4">
                 <content>
@@ -1265,7 +1440,7 @@ class MyClass(GeneratedClass):
                 </BehaviorLayer>
               </Timeline>
             </Box>
-            <Box name="Animated Say (1)" id="19" localization="8" tooltip="Say some text with animations. The text can be localized." x="473" y="604">
+            <Box name="Animated Say (1)" id="19" localization="8" tooltip="Say some text with animations. The text can be localized." x="563" y="621">
               <bitmap>media/images/box/interaction/say.png</bitmap>
               <script language="4">
                 <content>
@@ -1332,7 +1507,7 @@ class MyClass(GeneratedClass):
               <Parameter name="Animation" inherits_from_parent="0" content_type="3" value="Stand/Gestures/Hey_2" default_value="" custom_choice="0" tooltip="The animation to play" id="9" />
               <Resource name="Speech" type="Lock" timeout="0" />
             </Box>
-            <Box name="Animated Say (2)" id="20" localization="8" tooltip="Say some text with animations. The text can be localized." x="960" y="590">
+            <Box name="Animated Say (2)" id="20" localization="8" tooltip="Say some text with animations. The text can be localized." x="917" y="601">
               <bitmap>media/images/box/interaction/say.png</bitmap>
               <script language="4">
                 <content>
@@ -1554,7 +1729,68 @@ class MyClass(GeneratedClass):
               <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
               <Input name="onSet" type="1" type_size="1" nature="1" inner="0" tooltip="The data is set when a signal is received on this input." id="2" />
               <Output name="onReady" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when the data has been set." id="3" />
-              <Parameter name="Volume (%)" inherits_from_parent="0" content_type="1" value="97" default_value="50" min="0" max="100" tooltip="Percentage of maximum output volume." id="4" />
+              <Parameter name="Volume (%)" inherits_from_parent="0" content_type="1" value="100" default_value="50" min="0" max="100" tooltip="Percentage of maximum output volume." id="4" />
+            </Box>
+            <Box name="If" id="18" localization="8" tooltip="Test a condition and stimulate the then or else outputs depending on the boolean&#x0A;value of the condition.&#x0A;The condition can be set in parameters." x="989" y="221">
+              <bitmap>media/images/box/box-diagram.png</bitmap>
+              <script language="4">
+                <content>
+                  <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_onData(self, p):
+        param = self.getParameter("Value to compare")
+        try:
+            p = float(p)
+            param = float(param)
+        except:
+            p = str(p)
+            param = str(param)
+        operator = self.getParameter("Condition operator")
+        if( operator == "<" ):
+            self.outputTrueOrFalse( p < param )
+        elif( operator == "< or =" ):
+            self.outputTrueOrFalse( p <= param )
+        elif( operator == "=" ):
+            self.outputTrueOrFalse( p == param )
+        elif( operator == "> or =" ):
+            self.outputTrueOrFalse( p >= param )
+        elif( operator == ">" ):
+            self.outputTrueOrFalse( p > param )
+        elif( operator == "≠" ):
+            self.outputTrueOrFalse( p != param )
+        else:
+            raise Exception( "Operator not known: " + str(operator) )
+
+    def outputTrueOrFalse(self, condition):
+        if( condition ):
+            self.output_then()
+        else:
+            self.output_else()]]>
+                </content>
+              </script>
+              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+              <Input name="onData" type="0" type_size="1" nature="1" inner="0" tooltip="The data to test." id="2" />
+              <Output name="output_then" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent if the condition is true." id="3" />
+              <Output name="output_else" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent if the condition is false." id="4" />
+              <Parameter name="Condition operator" inherits_from_parent="0" content_type="3" value="≠" default_value="≠" custom_choice="0" tooltip='Choose the condition operator.&#x0A;&#x0A;For example:&#x0A;If you choose &quot;&gt; or =&quot;, the condition will be: is the input is higher or equal&#x0A;than the parameter?' id="5">
+                <Choice value="&lt;" />
+                <Choice value="&lt; or =" />
+                <Choice value="=" />
+                <Choice value="&gt; or =" />
+                <Choice value="&gt;" />
+                <Choice value="≠" />
+              </Parameter>
+              <Parameter name="Value to compare" inherits_from_parent="0" content_type="3" value="0" default_value="0" custom_choice="0" tooltip="This is the value which is compared to the input value." id="6" />
             </Box>
             <Box name="Python Script" id="24" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="1007" y="410">
               <bitmap>media/images/box/box-python-script.png</bitmap>
@@ -1586,265 +1822,22 @@ class MyClass(GeneratedClass):
               <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
               <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
             </Box>
-            <Box name="Speech Reco." id="5" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="132" y="281">
-              <bitmap>media/images/box/interaction/ear.png</bitmap>
-              <script language="4">
-                <content>
-                  <![CDATA[
-
-class MyClass(GeneratedClass):
-    def __init__(self):
-        GeneratedClass.__init__(self, False)
-
-    def onLoad(self):
-        try:
-            self.asr = self.session().service("ALSpeechRecognition")
-        except Exception as e:
-            self.asr = None
-            self.logger.error(e)
-        self.memory = self.session().service("ALMemory")
-        from threading import Lock
-        self.bIsRunning = False
-        self.mutex = Lock()
-        self.hasPushed = False
-        self.hasSubscribed = False
-        self.BIND_PYTHON(self.getName(), "onWordRecognized")
-
-    def onUnload(self):
-        from threading import Lock
-        self.mutex.acquire()
-        try:
-            if (self.bIsRunning):
-                if (self.hasSubscribed):
-                    self.memory.unsubscribeToEvent("WordRecognized", self.getName())
-                if (self.hasPushed and self.asr):
-                    self.asr.popContexts()
-        except RuntimeError, e:
-            self.mutex.release()
-            raise e
-        self.bIsRunning = False;
-        self.mutex.release()
-
-    def onInput_onStart(self):
-        from threading import Lock
-        self.mutex.acquire()
-        if(self.bIsRunning):
-            self.mutex.release()
-            return
-        self.bIsRunning = True
-        try:
-            if self.asr:
-                self.asr.pushContexts()
-            self.hasPushed = True
-            if self.asr:
-                self.asr.setVocabulary( self.getParameter("Word list").split(';'), self.getParameter("Enable word spotting") )
-            self.memory.subscribeToEvent("WordRecognized", self.getName(), "onWordRecognized")
-            self.hasSubscribed = True
-        except RuntimeError, e:
-            self.mutex.release()
-            self.onUnload()
-            raise e
-        self.mutex.release()
-
-    def onInput_onStop(self):
-        if( self.bIsRunning ):
-            self.onUnload()
-            self.onStopped()
-
-    def onWordRecognized(self, key, value, message):
-        if(len(value) > 1 and value[1] >= self.getParameter("Confidence threshold (%)")/100.):
-            self.wordRecognized(value[0]) #~ activate output of the box
-        else:
-            self.onNothing()]]>
-                </content>
-              </script>
-              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
-              <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
-              <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
-              <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
-              <Output name="wordRecognized" type="3" type_size="1" nature="2" inner="0" tooltip="Word recognized with a confidence higher than the threshold set in the box parameters." id="5" />
-              <Output name="onNothing" type="1" type_size="1" nature="2" inner="0" tooltip="Nothing has been understood." id="6" />
-              <Parameter name="Word list" inherits_from_parent="0" content_type="3" value="ignoring;me" default_value="yes;no" custom_choice="0" tooltip="Try to recognize a word from a list of words set in the box parameters." id="7" />
-              <Parameter name="Confidence threshold (%)" inherits_from_parent="0" content_type="1" value="40" default_value="30" min="0" max="100" tooltip="If the confidence associated with the word recognized is below this threshold, the robot will consider that it is not recognized." id="8" />
-              <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="9" />
-              <Resource name="Speech recognition" type="Lock" timeout="0" />
-            </Box>
-            <Box name="Speech Reco. (1)" id="6" localization="8" tooltip="Recognize a word from a list of words set in the box parameters.&#x0A;&#x0A;V1.1.0&#x0A;" x="387" y="272">
-              <bitmap>media/images/box/interaction/ear.png</bitmap>
-              <script language="4">
-                <content>
-                  <![CDATA[
-
-class MyClass(GeneratedClass):
-    def __init__(self):
-        GeneratedClass.__init__(self, False)
-
-    def onLoad(self):
-        try:
-            self.asr = self.session().service("ALSpeechRecognition")
-        except Exception as e:
-            self.asr = None
-            self.logger.error(e)
-        self.memory = self.session().service("ALMemory")
-        from threading import Lock
-        self.bIsRunning = False
-        self.mutex = Lock()
-        self.hasPushed = False
-        self.hasSubscribed = False
-        self.BIND_PYTHON(self.getName(), "onWordRecognized")
-
-    def onUnload(self):
-        from threading import Lock
-        self.mutex.acquire()
-        try:
-            if (self.bIsRunning):
-                if (self.hasSubscribed):
-                    self.memory.unsubscribeToEvent("WordRecognized", self.getName())
-                if (self.hasPushed and self.asr):
-                    self.asr.popContexts()
-        except RuntimeError, e:
-            self.mutex.release()
-            raise e
-        self.bIsRunning = False;
-        self.mutex.release()
-
-    def onInput_onStart(self):
-        from threading import Lock
-        self.mutex.acquire()
-        if(self.bIsRunning):
-            self.mutex.release()
-            return
-        self.bIsRunning = True
-        try:
-            if self.asr:
-                self.asr.pushContexts()
-            self.hasPushed = True
-            if self.asr:
-                self.asr.setVocabulary( self.getParameter("Word list").split(';'), self.getParameter("Enable word spotting") )
-            self.memory.subscribeToEvent("WordRecognized", self.getName(), "onWordRecognized")
-            self.hasSubscribed = True
-        except RuntimeError, e:
-            self.mutex.release()
-            self.onUnload()
-            raise e
-        self.mutex.release()
-
-    def onInput_onStop(self):
-        if( self.bIsRunning ):
-            self.onUnload()
-            self.onStopped()
-
-    def onWordRecognized(self, key, value, message):
-        if(len(value) > 1 and value[1] >= self.getParameter("Confidence threshold (%)")/100.):
-            self.wordRecognized(value[0]) #~ activate output of the box
-        else:
-            self.onNothing()]]>
-                </content>
-              </script>
-              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
-              <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
-              <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
-              <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
-              <Output name="wordRecognized" type="3" type_size="1" nature="2" inner="0" tooltip="Word recognized with a confidence higher than the threshold set in the box parameters." id="5" />
-              <Output name="onNothing" type="1" type_size="1" nature="2" inner="0" tooltip="Nothing has been understood." id="6" />
-              <Parameter name="Word list" inherits_from_parent="0" content_type="3" value="ice;cream" default_value="yes;no" custom_choice="0" tooltip="Try to recognize a word from a list of words set in the box parameters." id="7" />
-              <Parameter name="Confidence threshold (%)" inherits_from_parent="0" content_type="1" value="40" default_value="30" min="0" max="100" tooltip="If the confidence associated with the word recognized is below this threshold, the robot will consider that it is not recognized." id="8" />
-              <Parameter name="Enable word spotting" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="If this option is not activated the robot will only understand exact expressions. If it is, he will spot the exact expressions even in the middle of a sentence.&#x0A;&#x0A;!!Warning!! This option is only available with the speech recognition module using Nuance (ie in Atom version of the robot)." id="9" />
-              <Resource name="Speech recognition" type="Lock" timeout="0" />
-            </Box>
-            <Box name="Wait For Signals" id="25" localization="8" tooltip="Wait for both inputs to be stimulated before stimulating its output." x="831" y="443">
-              <bitmap>media/images/box/wait.png</bitmap>
-              <script language="4">
-                <content>
-                  <![CDATA[class MyClass(GeneratedClass):
-    def __init__(self):
-        GeneratedClass.__init__(self, False)
-
-    def onLoad(self):
-        self.ok = [False]*2
-
-    def onUnload(self):
-        #puts code for box cleanup here
-        ""
-
-    def onStart(self, nInput):
-        self.ok[nInput-1] = True
-        bOutput = True
-        for bOk in self.ok:
-            bOutput = bOutput and bOk
-        if( bOutput ):
-            self.ok = [False]*2
-            self.signalsReceived()
-
-    def onInput_signal1(self):
-        self.onStart(1)
-
-    def onInput_signal2(self):
-        self.onStart(2)]]>
-                </content>
-              </script>
-              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
-              <Input name="signal1" type="1" type_size="1" nature="1" inner="0" tooltip="First signal to wait." id="2" />
-              <Input name="signal2" type="1" type_size="1" nature="1" inner="0" tooltip="Second signal to wait." id="3" />
-              <Output name="signalsReceived" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when both inputs have been stimulated." id="4" />
-            </Box>
-            <Box name="Timer" id="26" localization="8" tooltip="Stimulate output repeatedly with the specified interval.&#x0A;Can be stopped anytime. &#x0A;Stimulating the input again restarts the timer.&#x0A;" x="460" y="898">
-              <bitmap>media/images/box/wait.png</bitmap>
-              <script language="4">
-                <content>
-                  <![CDATA[class MyClass(GeneratedClass):
-    def __init__(self):
-        GeneratedClass.__init__(self, False)
-
-    def onLoad(self):
-        self.timer = None
-
-    def onUnload(self):
-        self.cancelTimer()
-
-    def cancelTimer(self):
-        if self.timer:
-            self.timer.stop()
-        self.timer = None
-
-    def onTimer(self):
-        self.timerOutput()
-
-    def startTimer(self):
-        import qi
-        self.timer = qi.PeriodicTask()
-        self.timer.setCallback(self.onTimer)
-        self.timer.setUsPeriod(int(self.getParameter("Period (s)") * 1000 * 1000))
-        self.timer.start(True)
-
-    def onInput_onStart(self):
-        self.cancelTimer()
-        self.startTimer()
-
-    def onInput_onStop(self):
-        if self.timer and self.timer.isRunning():
-            self.onStopped()
-        self.onUnload()]]>
-                </content>
-              </script>
-              <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
-              <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Start the timer using the configured period value." id="2" />
-              <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Stop the timer." id="3" />
-              <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when the box is stopped." id="4" />
-              <Output name="timerOutput" type="1" type_size="1" nature="2" inner="0" tooltip="Send a bang periodically." id="5" />
-              <Parameter name="Period (s)" inherits_from_parent="0" content_type="2" value="1" default_value="1" min="0" max="5000" tooltip="Defines the period of the timer box (in seconds).&#x0A;&#x0A;For example, if this parameter is equal to 1s, the timerOutput will be stimulated&#x0A;every second until the onStop input is stimulated." id="6" />
-            </Box>
             <Link inputowner="1" indexofinput="2" outputowner="3" indexofoutput="4" />
             <Link inputowner="4" indexofinput="2" outputowner="0" indexofoutput="2" />
             <Link inputowner="3" indexofinput="2" outputowner="4" indexofoutput="4" />
             <Link inputowner="14" indexofinput="2" outputowner="2" indexofoutput="6" />
             <Link inputowner="2" indexofinput="2" outputowner="14" indexofoutput="4" />
+            <Link inputowner="5" indexofinput="3" outputowner="5" indexofoutput="6" />
+            <Link inputowner="6" indexofinput="3" outputowner="6" indexofoutput="6" />
             <Link inputowner="7" indexofinput="3" outputowner="7" indexofoutput="5" />
             <Link inputowner="8" indexofinput="3" outputowner="8" indexofoutput="5" />
             <Link inputowner="9" indexofinput="3" outputowner="9" indexofoutput="5" />
+            <Link inputowner="6" indexofinput="2" outputowner="5" indexofoutput="5" />
+            <Link inputowner="7" indexofinput="2" outputowner="6" indexofoutput="5" />
             <Link inputowner="9" indexofinput="2" outputowner="8" indexofoutput="4" />
             <Link inputowner="8" indexofinput="2" outputowner="7" indexofoutput="4" />
             <Link inputowner="11" indexofinput="3" outputowner="11" indexofoutput="5" />
+            <Link inputowner="12" indexofinput="3" outputowner="12" indexofoutput="5" />
             <Link inputowner="13" indexofinput="3" outputowner="13" indexofoutput="5" />
             <Link inputowner="15" indexofinput="3" outputowner="15" indexofoutput="5" />
             <Link inputowner="16" indexofinput="3" outputowner="16" indexofoutput="5" />
@@ -1853,20 +1846,17 @@ class MyClass(GeneratedClass):
             <Link inputowner="13" indexofinput="2" outputowner="20" indexofoutput="4" />
             <Link inputowner="16" indexofinput="2" outputowner="22" indexofoutput="4" />
             <Link inputowner="23" indexofinput="2" outputowner="1" indexofoutput="3" />
+            <Link inputowner="5" indexofinput="2" outputowner="23" indexofoutput="3" />
             <Link inputowner="0" indexofinput="4" outputowner="17" indexofoutput="3" />
             <Link inputowner="15" indexofinput="2" outputowner="21" indexofoutput="4" />
             <Link inputowner="10" indexofinput="2" outputowner="9" indexofoutput="4" />
             <Link inputowner="19" indexofinput="2" outputowner="11" indexofoutput="4" />
+            <Link inputowner="20" indexofinput="2" outputowner="12" indexofoutput="4" />
             <Link inputowner="21" indexofinput="2" outputowner="13" indexofoutput="4" />
             <Link inputowner="11" indexofinput="2" outputowner="10" indexofoutput="3" />
             <Link inputowner="22" indexofinput="2" outputowner="15" indexofoutput="4" />
-            <Link inputowner="6" indexofinput="3" outputowner="6" indexofoutput="5" />
-            <Link inputowner="7" indexofinput="2" outputowner="6" indexofoutput="4" />
-            <Link inputowner="5" indexofinput="2" outputowner="23" indexofoutput="3" />
-            <Link inputowner="5" indexofinput="3" outputowner="5" indexofoutput="5" />
-            <Link inputowner="6" indexofinput="2" outputowner="5" indexofoutput="4" />
-            <Link inputowner="12" indexofinput="3" outputowner="12" indexofoutput="5" />
-            <Link inputowner="20" indexofinput="2" outputowner="12" indexofoutput="4" />
+            <Link inputowner="5" indexofinput="4" outputowner="5" indexofoutput="7" />
+            <Link inputowner="6" indexofinput="2" outputowner="5" indexofoutput="8" />
           </Diagram>
         </BehaviorKeyframe>
       </BehaviorLayer>
