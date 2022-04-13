@@ -6,10 +6,10 @@
 # (It might need to be copy-pasted into an untitled script to work)
 
 # Replace ips with NAO robot ips
-$ip1="127.0.0.1"
-$ip2="127.0.0.1"
+$ip1="192.168.208.108"
+$ip2="192.168.208.73"
 $port1=9558
 $port2=9559
 
-pythonw C:\Users\Jacob\Documents\test.py --ip $ip1 --port $port1
-pythonw C:\Users\Jacob\Documents\test.py --ip $ip2 --port $port2
+C:\Python27\pythonw.exe test.py --ip $ip1 --port $port1
+C:\Python27\pythonw.exe test.py --ip $ip2 --port $port2
