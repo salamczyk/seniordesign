@@ -38,7 +38,7 @@ def recSpeech(vocab, wordSpot=True):
     response = DEFAULT_MEM
     counter = 0
     
-    while response == DEFAULT_MEM and counter < 50:
+    while response == DEFAULT_MEM and counter < 500:
         time.sleep(0.01)
         response = mem.getData("WordRecognized")
         counter += 1

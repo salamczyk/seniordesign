@@ -37,7 +37,7 @@ def recSpeech(vocab, wordSpot=True):
     response = DEFAULT_MEM
     counter = 0
     
-    while response == DEFAULT_MEM and counter < 50:
+    while response == DEFAULT_MEM and counter < 500:
         time.sleep(0.01)
         response = mem.getData("WordRecognized")
         counter += 1
@@ -98,28 +98,28 @@ while True:
         recSpeech(['cheer', 'up'])
         state = 2
     elif state = 2:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("How are you? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['with', 'time']):
             state = 3
         else:
             state = 2
     elif state = 3:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Why are your eyes blue? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['a', 'joke']):
             state = 4
         else:
             state = 3
     elif state = 4:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Affirmative. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['nine', 'ten']):
             state = 5
         else:
             state = 4
     elif state = 5:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Twenty-one. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['good', 'answer']):
             print("DONE")
