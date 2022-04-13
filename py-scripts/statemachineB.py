@@ -3,6 +3,7 @@
 from naoqi import ALProxy
 import sys
 import time
+import pandas as pd
 from enum import Enum
 
 ip = "1" # change
@@ -10,7 +11,7 @@ port = 9559
 
 # Constants
 DEFAULT_MEM = ['', -3.0]
-FILE = "mainResultsB.out"
+FILE = "mainResultsB.csv"
 
 class Color(Enum):
     RED = 0x00ff0000
@@ -33,7 +34,7 @@ def recSpeech(vocab, wordSpot=True):
     speechRec.pause(True)
     speechRec.setVocabulary(vocab, wordSpot)
     
-    speechRec.subscribe("Test")
+    speechRec.subscribe("RobotB")
     response = DEFAULT_MEM
     counter = 0
     
@@ -41,12 +42,15 @@ def recSpeech(vocab, wordSpot=True):
         time.sleep(0.01)
         response = mem.getData("WordRecognized")
         counter += 1
-    speechRec.unsubscribe("Test")
+    speechRec.unsubscribe("RobotB")
     print("RESPONSE = %s" % response)
 
-    with open(FILE, 'a') as f:
-        f.write('RESPONSE = ' + str(response))
-        f.write('\n')
+    word_list.append(response[0])
+    conf_list.append(response[1])
+
+    # with open(FILE, 'a') as f:
+    #     f.write('RESPONSE = ' + str(response))
+    #     f.write('\n')
 
     if response == DEFAULT_MEM:
         return False
@@ -55,6 +59,8 @@ def recSpeech(vocab, wordSpot=True):
 
 # state 0 - initialize robot
 state = 0
+word_list = [DEFAULT_MEM[0]]
+conf_list = [DEFAULT_MEM[1]]
 
 while True:    
     if state = 0:
@@ -71,16 +77,16 @@ while True:
         state = 1
     elif state = 1:
         animSay.say("Why are you ignoring me? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Do you want ice cream? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Do you want to play a game? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Are you tired? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("What is wrong? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         leds.fadeRGB(ledsGroup, Color.BLUE, 0.1)
-        time.sleep(1)
+        time.sleep(2)
         state = 2
     elif state = 2:
         animSay.say("Cheer up. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
@@ -89,26 +95,30 @@ while True:
         else:
             state = 2
     elif state = 3:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Everything will get better with time. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['eyes', 'blue']):
             state = 4
         else:
             state = 3
     elif state = 4:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("Do you want to hear a joke? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['affirmative']):
             state = 5
         else:
             state = 4
     elif state = 5:
-        time.sleep(1)
+        time.sleep(2)
         animSay.say("What is nine plus ten? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['twenty', 'one']):
             animSay.say("Good answer. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
             leds.fadeRGB(ledsGroup, Color.RED, 0.1)
             print("DONE")
-            sys.exit()
+            break
         else:
             state = 5
+
+d = {'word':word_list, 'confidence':conf_list}
+df = pd.DataFrame(d)
+df.to_csv(FILE)

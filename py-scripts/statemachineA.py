@@ -10,7 +10,7 @@ port = 9559
 
 # Constants
 DEFAULT_MEM = ['', -3.0]
-FILE = "mainResultsA.out"
+FILE = "mainResultsA.csv"
 
 class Color(Enum):
     RED = 0x00ff0000
@@ -33,7 +33,7 @@ def recSpeech(vocab, wordSpot=True):
     speechRec.pause(True)
     speechRec.setVocabulary(vocab, wordSpot)
     
-    speechRec.subscribe("Test")
+    speechRec.subscribe("RobotA")
     response = DEFAULT_MEM
     counter = 0
     
@@ -41,20 +41,25 @@ def recSpeech(vocab, wordSpot=True):
         time.sleep(0.01)
         response = mem.getData("WordRecognized")
         counter += 1
-    speechRec.unsubscribe("Test")
+    speechRec.unsubscribe("RobotA")
     print("RESPONSE = %s" % response)
     print("MOOD = %s" % mood_rating)
 
-    with open(FILE, 'a') as f:
-        f.write('RESPONSE = ' + str(response))
-        f.write('\n')
-        f.write('MOOD = ' + str(mood_rating))
-        f.write('\n')
+    # with open(FILE, 'a') as f:
+    #     f.write('RESPONSE = ' + str(response))
+    #     f.write('\n')
+    #     f.write('MOOD = ' + str(mood_rating))
+    #     f.write('\n')
+
+    word_list.append(response[0])
+    conf_list.append(response[1])
 
     if response == DEFAULT_MEM:
+        mood_list.append(mood_rating)
         return False
     else:
         mood_rating += 20
+        mood_list.append(mood_rating)
         if mood_rating >= 100:
             leds.fadeRGB(ledsGroup, Color.GREEN, 0.1)
         elif mood_rating >= 0:
@@ -65,6 +70,9 @@ def recSpeech(vocab, wordSpot=True):
 
 # state 0 - initialize robot
 state = 0
+mood_list = [-100]
+word_list = [DEFAULT_MEM[0]]
+conf_list = [DEFAULT_MEM[1]]
 
 while True:    
     if state = 0:
@@ -115,6 +123,10 @@ while True:
         animSay.say("Twenty-one. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['good', 'answer']):
             print("DONE")
-            sys.exit()
+            break
         else:
             state = 5
+
+d = {'word':word_list, 'confidence':conf_list, 'mood':mood_list}
+df = pd.DataFrame(d)
+df.to_csv(FILE)
