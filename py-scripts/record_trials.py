@@ -7,7 +7,7 @@ import pandas as pd
 from enum import Enum
 
 # Change when applicable
-ip = "169.254.245.88"
+ip = "192.168.208.177"
 port = 9559
 
 # Constants
@@ -39,7 +39,7 @@ def recSpeech(vocab, wordSpot=True):
     response = DEFAULT_MEM
     counter = 0
     
-    while response == DEFAULT_MEM and counter < 50:
+    while response == DEFAULT_MEM and counter < 500:
         time.sleep(0.01)
         response = mem.getData("WordRecognized")
         counter += 1
@@ -57,10 +57,9 @@ def record_trials(vocab, fileName, numTrials):
 
     while count < numTrials:
         result = recSpeech(vocab)
-        if result[1] != -3.0:
-            count += 1
-            conf_list.append(result[0])
-            word_list.append(result[1])
+        count += 1
+        conf_list.append(result[0])
+        word_list.append(result[1])
 
     print conf_list
     print word_list
@@ -68,10 +67,30 @@ def record_trials(vocab, fileName, numTrials):
     d = {'word':word_list, 'confidence':conf_list}
 
     df = pd.DataFrame(d)
-    df.to_csv(fileName, index=False)
+    df.to_csv(fileName)
 
     # with open(fileName, 'a') as f:
     #     f.write(str(word_list))
     #     f.write('\n')
     #     f.write(str(conf_list))
     #     f.write('\n')
+
+full_vocab = ['ignoring', 'me', 'ice', 'cream', 'a', 'game','you',
+              'tired', 'is', 'wrong', 'cheer', 'up', 'with', 'time',
+              'a', 'joke', 'nine', 'ten', 'good', 'answer', 'are',
+              'you', 'eyes', 'blue', 'affirmative', 'twenty', 'one']
+#record_trials(['ignoring','me'], 'sentence1.csv', 20)
+#record_trials(['ice','cream'], 'sentence2.csv', 20)
+#record_trials(['a','game'], 'sentence3.csv', 20)
+#record_trials(['you','tired'], 'sentence4.csv', 20)
+#record_trials(['is','wrong'], 'sentence5.csv', 20)
+#record_trials(['cheer','up'], 'sentence6.csv', 20)
+#record_trials(['with','time'], 'sentence7.csv', 20)
+#record_trials(['a','joke'], 'sentence8.csv', 20)
+#record_trials(['nine','ten'], 'sentence9.csv', 20)
+#record_trials(['good','answer'], 'sentence10.csv', 20)
+#record_trials(['are','you'], 'sentence11.csv', 20)
+#record_trials(['eyes','blue'], 'sentence12.csv', 20)
+#record_trials(['affirmative'], 'sentence13.csv', 20)
+#record_trials(['twenty','one'], 'sentence14.csv', 20)
+record_trials(full_vocab, 'final5.csv', 50)
