@@ -3,14 +3,16 @@
 from naoqi import ALProxy
 import sys
 import time
+import pandas as pd
 from enum import Enum
 
-ip = "1" # change
+ip = "192.168.208.177" # change
 port = 9559
+mood_rating = -100
 
 # Constants
 DEFAULT_MEM = ['', -3.0]
-FILE = "mainResultsA.csv"
+FILE = "mainResultsA3.csv"
 
 class Color(Enum):
     RED = 0x00ff0000
@@ -30,6 +32,7 @@ except:
     sys.exit()
 
 def recSpeech(vocab, wordSpot=True):
+    global mood_rating
     speechRec.pause(True)
     speechRec.setVocabulary(vocab, wordSpot)
     
@@ -75,7 +78,7 @@ word_list = [DEFAULT_MEM[0]]
 conf_list = [DEFAULT_MEM[1]]
 
 while True:    
-    if state = 0:
+    if state == 0:
         # stand up
         posture.goToPosture("StandInit", 1.0)
         # eye color
@@ -86,46 +89,67 @@ while True:
         leds.fadeRGB(ledsGroup, Color.RED, 0.1)
         # set speaker volume
         tts.setVolume(1.0)
-        mood_rating = -100
         state = 1
-    elif state = 1:
+    elif state == 1:
         # begin recognizing speech
-        recSpeech(['ignoring', 'me'])
-        recSpeech(['ice', 'cream'])
-        recSpeech(['a', 'game'])
-        recSpeech(['you', 'tired'])
-        recSpeech(['is', 'wrong'])
-        recSpeech(['cheer', 'up'])
-        state = 2
-    elif state = 2:
-        time.sleep(2)
-        animSay.say("How are you? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
-        if recSpeech(['with', 'time']):
+        if recSpeech(['ignoring', 'me']):
+            state = 2
+        else:
+            state = 1
+    elif state == 2:
+        if recSpeech(['ice', 'cream']):
             state = 3
         else:
             state = 2
-    elif state = 3:
+    elif state == 3:
+        if recSpeech(['a', 'game']):
+            state = 4
+        else:
+            state = 5
+    elif state == 4:
+        if recSpeech(['you', 'tired']):
+            state = 6
+        else:
+            state = 5
+    elif state == 6:
+        if recSpeech(['is', 'wrong']):
+            state = 7
+        else:
+            state = 6
+    elif state == 7:
+        if recSpeech(['cheer', 'up']):
+            state = 8
+        else:
+            state = 7
+    elif state == 8:
+        time.sleep(2)
+        animSay.say("How are you? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
+        if recSpeech(['with', 'time']):
+            state = 9
+        else:
+            state = 8
+    elif state == 9:
         time.sleep(2)
         animSay.say("Why are your eyes blue? ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['a', 'joke']):
-            state = 4
+            state = 10
         else:
-            state = 3
-    elif state = 4:
+            state = 9
+    elif state == 10:
         time.sleep(2)
         animSay.say("Affirmative. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['nine', 'ten']):
-            state = 5
+            state = 11
         else:
-            state = 4
-    elif state = 5:
+            state = 10
+    elif state == 11:
         time.sleep(2)
         animSay.say("Twenty-one. ^start(animations/Stand/Gestures/Hey_2)", "contextual")
         if recSpeech(['good', 'answer']):
             print("DONE")
             break
         else:
-            state = 5
+            state = 11
 
 d = {'word':word_list, 'confidence':conf_list, 'mood':mood_list}
 df = pd.DataFrame(d)
