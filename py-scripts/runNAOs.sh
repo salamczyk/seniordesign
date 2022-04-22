@@ -4,11 +4,11 @@ t=$(date +%s)
 
 ipA='192.168.208.177'
 portA=9559
-fileA="dataA$t.csv"
+fileA="data/dataA$t.csv"
 
 ipB='192.168.208.231'
 portB=9559
-fileB="dataB$t.csv"
+fileB="data/dataB$t.csv"
 
 python2.7 statemachineA.py $ipA $portA $fileA &
 sleep 3
